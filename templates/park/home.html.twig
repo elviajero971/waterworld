@@ -2,15 +2,16 @@
 
 {% block body %}
 {% include 'layouts/jumbotron.html.twig' %}	
-    <div class="jumbotron top-space">
-
-	
-		
-	</div>
+    <div class="jumbotron top-space"></div>
    
-
+    {% if app.session.flashBag.has('ajout') %}
+        {% for msg in app.session.flashBag.get('ajout') %}
+            <div class="alert-success">'{{msg}}'</div>
+        {% endfor %}
+    {% endif %}
     <div class="container">
-        <h1>This is the Home Page</h1>		
+        <h1>This is the Home Page</h1>
+        <p>{{ totalIncome }} €</p>		
     </div>
 
 {% endblock %}

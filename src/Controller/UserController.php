@@ -55,18 +55,19 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="user_show", methods={"GET"})
+     * @Route("/{slug}", name="user_show", methods={"GET"})
      */
     public function show(User $user): Response
     {
-        
+        $bookings = $user->getBookings()->toArray();
         return $this->render('user/show.html.twig', [
             'user' => $user,
+            'bookings' => $bookings
         ]);
     }
 
     /**
-     * @Route("/{id}/edit", name="user_edit", methods={"GET","POST"})
+     * @Route("/{slug}/edit", name="user_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, User $user,UserPasswordEncoderInterface $passwordEncoder): Response
     {
@@ -74,10 +75,13 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $entityManager = $this->getDoctrine()->getManager();
             $user->setPassword(
                 $passwordEncoder->encodePassword($user, $user->getPassword()));
-            return $this->redirectToRoute('user_index');
+            $entityManager->persist($user);
+            $entityManager->flush();
+            
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('user/edit.html.twig', [

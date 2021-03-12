@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Controller;
-use App\Entity\Park;
+
+use App\Service\BookingService;
+
 use App\Entity\Booking;
 use App\Form\BookingType;
 use App\Repository\BookingRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,30 +31,31 @@ class BookingController extends AbstractController
     /**
      * @Route("/new", name="booking_new", methods={"GET","POST"})
      */
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, BookingService $bookingService): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+
         $booking = new Booking();
         $form = $this->createForm(BookingType::class, $booking);
         $form->handleRequest($request);
-        $park = $entityManager->getRepository(Park::class)->findAll();
         $user = $this->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
-            
+
             $booking = $form->getData();
-            $user->addBooking($booking);
-            $park[0]->addBooking($booking);
-            
-            $entityManager->persist($user);
-            
-            $entityManager->flush();
-            // $entityManager->persist($park[0]);
-            // $entityManager->flush();
-            return $this->redirectToRoute('booking_index');
+            $bookingService->newBooking($booking, $user);
+
+            $date=$booking->getDate();
+            $dateString=$date->format('d/m/Y');
+            $nbOfSeats = $booking->getNbOfSeats();
+            $totalPrice = $booking->getTotalBookingPrice();
+
+            $sess = $request->getSession();
+            $sess->getFlashBag()->add("ajout", "La réservation de ".$nbOfSeats." places pour un total de ".$totalPrice." € a été ajoutée pour le ".$dateString);
+
+            return $this->redirectToRoute('home');
         }
 
-        
+
         return $this->render('booking/new.html.twig', [
             'booking' => $booking,
             'form' => $form->createView(),

@@ -112,10 +112,13 @@ class Park
         return $this->totalIncome;
     }
 
-    public function setTotalIncome(?float $totalIncome): self
+    public function setTotalIncome(): self
     {
-        $this->totalIncome = $totalIncome;
-
+        $total = 0;
+        foreach($this->getBookings() as $booking){
+            $total += $booking->getTotalBookingPrice();
+        }
+        $this->totalIncome = $total;
         return $this;
     }
 

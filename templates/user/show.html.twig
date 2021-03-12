@@ -8,27 +8,55 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ user.id }}</td>
+                <th>FirstName</th>
+                <td>{{ user.firstName }}</td>
+            </tr>
+            <tr>
+                <th>LastName</th>
+                <td>{{ user.lastName }}</td>
+            </tr>
+            <tr>
+                <th>NickName</th>
+                <td>{{ user.nickName }}</td>
             </tr>
             <tr>
                 <th>Email</th>
                 <td>{{ user.email }}</td>
-            </tr>
-            <tr>
-                <th>Roles</th>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-            </tr>
-            <tr>
-                <th>Password</th>
-                <td>{{ user.password }}</td>
             </tr>
         </tbody>
     </table>
 
     <a href="{{ path('user_index') }}">back to list</a>
 
-    <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
+    <a href="{{ path('user_edit', {'slug': user.slug}) }}">edit</a>
 
     {{ include('user/_delete_form.html.twig') }}
+    <div class="container">
+        <h1>Bookings list</h1>
+        <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Booking Ref</th>
+                <th>Number of Seats</th>
+                <th>Total price</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for booking in bookings %}
+            <tr>
+                <td>{{booking.date|date("m/d/Y", "Europe/Paris")}}</td>
+                <td>{{ booking.bookingRef }}</td>
+                <td>{{ booking.nbOfSeats }}</td>
+                <td>{{ booking.totalBookingPrice }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">You don't have any bookings yet</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
 {% endblock %}

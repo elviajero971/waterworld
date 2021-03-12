@@ -11,10 +11,11 @@ class ParkController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-    public function home(): Response
+    public function home(ParkService $parkService): Response
     {
+        $totalIncome = $parkService->getTotalIncome();
         return $this->render('park/home.html.twig', [
-            'controller_name' => 'HomeController',
+            'totalIncome' => $totalIncome,
         ]);
     }
 
@@ -59,6 +60,8 @@ class ParkController extends AbstractController
             'controller_name' => 'ParkController',
         ]);
     }
+
+    
 
     
 }

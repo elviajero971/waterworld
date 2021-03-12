@@ -4,12 +4,17 @@ namespace App\Entity;
 
 use App\Repository\BookingRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=BookingRepository::class)
  */
 class Booking
 {
+    public function __construct()
+    {
+        $this->date = new \DateTime();
+    }
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -19,6 +24,7 @@ class Booking
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\GreaterThan("today UTC", message="The date must be greater than today")
      */
     private $date;
 
