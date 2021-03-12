@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{attraction.title}}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <img src="/uploads/{{attraction.image}}" alt="{{attraction.title}}" class="img-fluid" />
+        </div>
+        <div class="col-md-7 my-auto">
+            <h3>{{attraction.title}}</h3>
+            <hr>
+            <p class="product-description">{{attraction.description}}</p>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <button class="btn btn-success b-5">
+            <a href="/" class="text-decoration-none">Make a booking!</a>
+        </button>
+    </div>
+</div>
+{% endblock %}
